@@ -1930,6 +1930,11 @@ type-is@^1.6.16:
     media-typer "0.3.0"
     mime-types "~2.1.24"
 
+typescript@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.npm.taobao.org/typescript/download/typescript-4.0.2.tgz?cache=0&sync_timestamp=1598338192779&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftypescript%2Fdownload%2Ftypescript-4.0.2.tgz#7ea7c88777c723c681e33bf7988be5d008d05ac2"
+  integrity sha1-fqfIh3fHI8aB4zv3mIvl0AjQWsI=
+
 uniq@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/uniq/download/uniq-1.0.1.tgz#b31c5ae8254844a3a8281541ce2b04b865a734ff"
@@ -2001,6 +2006,11 @@ vite@^1.0.0-rc.1:
     vue "^3.0.0-rc.5"
     ws "^7.2.3"
 
+vue-router@4.0.0-beta.7:
+  version "4.0.0-beta.7"
+  resolved "https://registry.npm.taobao.org/vue-router/download/vue-router-4.0.0-beta.7.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue-router%2Fdownload%2Fvue-router-4.0.0-beta.7.tgz#afd8469c8f2aa86a2c785c08dfb954223f86581f"
+  integrity sha1-r9hGnI8qqGoseFwI37lUIj+GWB8=
+
 vue@^3.0.0-rc.1, vue@^3.0.0-rc.5:
   version "3.0.0-rc.8"
   resolved "https://registry.npm.taobao.org/vue/download/vue-3.0.0-rc.8.tgz#001b9d7a4033d6ff4b601c6457fc080e192fead9"
@@ -2009,6 +2019,11 @@ vue@^3.0.0-rc.1, vue@^3.0.0-rc.5:
     "@vue/compiler-dom" "3.0.0-rc.8"
     "@vue/runtime-dom" "3.0.0-rc.8"
     "@vue/shared" "3.0.0-rc.8"
+
+vuex@4.0.0-beta.4:
+  version "4.0.0-beta.4"
+  resolved "https://registry.npm.taobao.org/vuex/download/vuex-4.0.0-beta.4.tgz#7b319ead2ef30432b7eaa4e37258ea3c5e44f698"
+  integrity sha1-ezGerS7zBDK36qTjcljqPF5E9pg=
 
 wcwidth@^1.0.1:
   version "1.0.1"
