@@ -5,7 +5,7 @@
   </div>
   <div class="list-box">
       <div class="list-item">
-          待办1 
+          待办1  
       </div>
   </div>
 </template>
