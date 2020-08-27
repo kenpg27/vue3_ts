@@ -29,6 +29,8 @@ interface Subject {
   // 自身操作
   selfAction(): void;
 }
+
+//
 class ConcreteSubject<Subject> {
   private ObserverList: Observer[] = [];
   addObserver(obj: Observer) {
@@ -52,17 +54,14 @@ class ConcreteSubject<Subject> {
 
 function useObserver(): void {
   const subject: Subject = new ConcreteSubject();
-  const Leo = new ConcreteObserver("Leo");
-  const Robin = new ConcreteObserver("Robin");
-  const Pual = new ConcreteObserver("Pual");
-  const Lisa = new ConcreteObserver("Lisa");
-  subject.addObserver(Leo);
-  subject.addObserver(Robin);
-  subject.addObserver(Pual);
-  subject.addObserver(Lisa);
+  const Zhangsan = new ConcreteObserver("张三");
+  const Lisi = new ConcreteObserver("李四");
+  const Wangwu = new ConcreteObserver("王五");
+  subject.addObserver(Zhangsan);
+  subject.addObserver(Lisi);
+  subject.addObserver(Wangwu);
   subject.notifyObservers();
-  subject.deleteObserver(Pual);
-  subject.deleteObserver(Lisa);
+  subject.deleteObserver(Wangwu);
   subject.notifyObservers();
 }
 useObserver();
