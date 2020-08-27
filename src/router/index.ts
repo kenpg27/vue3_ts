@@ -10,6 +10,11 @@ export default createRouter({
       path: '/todo',
       // 必须添加.vue后缀
       component: () => import('../views/todo.vue')
+    },
+    {
+      path: '/observer',
+      // 必须添加.vue后缀
+      component: () => import('../views/observer.vue')
     }
   ]
 })
