@@ -1,17 +1,17 @@
 
 // 发布者接口（ Publisher ）
-interface Publisher<T> {
+export interface Publisher<T> {
     subscriber: string;
     data: T;
 }
 // 事件总线接口（EventChannel）
-interface EventChannel<T> {
+export interface EventChannel<T> {
     on: (subscriber: string, callback: () => void) => void;
     off: (subscriber: string, callback: () => void) => void;
     emit: (subscriber: string, data: T) => void;
 }
 // 订阅者接口（Subscriber）
-interface Subscriber {
+export interface Subscriber {
     subscriber: string;
     callback: () => void;
 }
