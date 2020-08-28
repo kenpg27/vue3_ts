@@ -15,6 +15,16 @@ export default createRouter({
       path: '/observer',
       // 必须添加.vue后缀
       component: () => import('../views/observer.vue')
-    }
+    },
+    {
+      path: '/event',
+      // 必须添加.vue后缀
+      component: () => import('../views/event.vue')
+    },
+    {
+      path: '/callback',
+      // 必须添加.vue后缀
+      component: () => import('../views/callback.vue')
+    },
   ]
 })
