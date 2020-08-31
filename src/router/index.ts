@@ -26,5 +26,10 @@ export default createRouter({
       // 必须添加.vue后缀
       component: () => import('../views/callback.vue')
     },
+    {
+      path: '/upload',
+      // 必须添加.vue后缀
+      component: () => import('../views/upload.vue')
+    },
   ]
 })
