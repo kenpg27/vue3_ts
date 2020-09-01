@@ -1,7 +1,13 @@
 <template>
   <div>
-    <h1>Vue3.0-upload调用</h1>
-    <k-uploader :fileList="fileList" title="vue3.0组件上传"></k-uploader>
+    <h1>Vue3.0-ts-upload</h1>
+    <k-uploader
+      :files="fileList"
+      title="vue3.0_ts_组件上传"
+      @on-change="onChange"
+      @on-success="onSuccess"
+      @on-error="onError"
+    ></k-uploader>
   </div>
 </template>
 
@@ -31,9 +37,25 @@ export default {
         url: "https://ossweb-img.qq.com/images/lol/web201310/skin/big39000.jpg",
       },
     ]);
+
+    const onSuccess = (res: IFile) => {
+      console.log(res);
+      console.log("success");
+    };
+    const onError = (res: IFile) => {
+      console.log(res);
+      console.log("error");
+    };
+    const onChange = (res: IFile[]) => {
+      console.log(res);
+      console.log("change");
+    };
     return {
       fileList,
       activeId,
+      onSuccess,
+      onError,
+      onChange,
     };
   },
 };

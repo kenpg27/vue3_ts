@@ -176,7 +176,6 @@ function handleFile(file, options) {
         ctx.drawImage(image, 0, 0, dw, dh);
         URL.revokeObjectURL(image.src);
         canvas.toBlob(blob => {
-          console.log(blob);
           resolve(blob);
         }, "image/jpeg", quality);
       });

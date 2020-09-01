@@ -17,16 +17,7 @@
               backgroundImage: `url(${item.url})`
             }"
           @click="handleFileClick($event, item, index)"
-        >
-          <div
-            v-if="!!item.fetchStatus && item.fetchStatus !== 'success'"
-            class="k-uploader_file-content"
-          >
-            {{ item.fetchStatus === 'progress' ? item.progress + '%' : '' }}
-            <!-- progress !== 0 && progress < 100 -->
-            <i v-if="item.fetchStatus === 'fail'" class="upload-error"></i>
-          </div>
-        </li>
+        ></li>
       </ul>
       <div class="k-uploader_input-box" v-show="fileList.length < limit && !readonly">
         <input
@@ -38,23 +29,29 @@
           :capture="capture"
           :multiple="multiple"
           @change="handleChange"
+          :value="inputValue"
         />
       </div>
     </div>
+
     <div class="k-uploader_previewer" id="previewer" v-if="previewVisible">
       <div
         ref="previewerImg"
         class="k-uploader_preview-img"
         id="previewerImg"
         @click="hidePreviewer"
+        :style="{
+              backgroundImage: `url(${currentImg})`
+        }"
       ></div>
+
       <div class="k-uploader_del" v-if="!readonly" @click="deleteImg"></div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, reactive, onMounted, onUpdated, onUnmounted } from "vue";
+import { ref, reactive} from "vue";
 import { handleFile, transformCoordinate, dataURItoBlob } from "./utils";
 // 文件信息接口
 interface IFile {
@@ -64,7 +61,7 @@ interface IFileItem {
   url: string;
   blob: any;
 }
-// input接口
+// InputEvent接口
 interface HTMLInputEvent extends Event {
   target: HTMLInputElement & EventTarget;
 }
@@ -81,7 +78,7 @@ export default {
     },
     limit: {
       type: Number, //限制上传图片个数
-      default: 5,
+      default: 9,
     },
     capture: {
       type: Boolean, //是否只选择调用相机
@@ -105,6 +102,7 @@ export default {
     },
     params: {
       type: Object, //上传文件时携带的自定义参数
+      default: () => {},
     },
     name: {
       type: String, //上传文件时FormData的Key，默认为file
@@ -123,20 +121,25 @@ export default {
       default: false,
     },
   },
-  setup(props, context) {
+  setup(props, { emit }) {
     const { limit, title, files, readonly } = props;
     // 待上传文件
-    const fileList: object[] = reactive([]);
+    let fileList = reactive<any[]>([]);
+    fileList = files;
     // 预览开关
-    let previewVisible = ref(false);
+    let previewVisible = ref<Boolean>(false);
     // 当前预览的图片序号
     let currentIndex = ref(0);
+    // 定义当前预览图片img
+    let currentImg = ref<string | null>("");
+    let inputValue = ref<string | null>("");
+
     // 文件变更操作
     const handleChange = (event: HTMLInputEvent): void => {
       const { enableCompress, maxWidth, quality, autoUpload } = props;
       const target = event.target || event.srcElement;
       const inputChangeFiles: [] | any = target.files;
-      console.log("files", inputChangeFiles);
+      // console.log("files", inputChangeFiles);
       if (inputChangeFiles.length <= 0) {
         // 调用取消
         return;
@@ -146,7 +149,7 @@ export default {
         alert(`不能上传超过${limit}张图片`);
         return;
       }
-
+      // console.log("handleFile");
       // 执行操作
       Promise.all(
         Array.prototype.map.call(inputChangeFiles, (file) => {
@@ -170,7 +173,9 @@ export default {
                 .then((result) => {
                   fileList.push(fileItem);
                   // 回调方法
-                  // vue2.x写法 ：this.$emit('on-change', fileItem, fileList);
+                  // vue2.x写法 ：this.$emit('on-change', fileList);
+                  emit("on-change", fileList);
+                  console.log("success");
                 })
                 .catch((e) => {
                   fileList.push(fileItem);
@@ -179,12 +184,28 @@ export default {
             }
           });
         })
-      ).then(() => {});
+      ).then(() => {
+        inputValue.value = "";
+      });
     };
 
     // 上传文件
     const uploadFile = (blob: string, fileItem: any) => {
       return new Promise((resolve, reject) => {
+        // 暂时resolve 模拟返回 正式使用请删掉
+        const result = {
+          status: 1,
+          msg: "上传成功",
+          data: {
+            filename: "图片名字",
+            url:
+              "https://ossweb-img.qq.com/images/lol/web201310/skin/big84000.jpg",
+          },
+        };
+        resolve(result);
+        emit("on-success", result);
+        return;
+
         const me = this;
         const { url, params, name } = props;
         const formData = new FormData();
@@ -198,16 +219,22 @@ export default {
         }
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 1) {
-            const accessToken: any = localStorage.getItem("token")
-              ? localStorage.getItem("token")
-              : "";
-            xhr.setRequestHeader("Authorization", accessToken);
+            if (localStorage.getItem("token")) {
+              const accessToken: any = localStorage.getItem("token");
+              xhr.setRequestHeader("Authorization", accessToken);
+            }
           }
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
               const result = JSON.parse(xhr.responseText);
+              // 回调父页面on-success
+              // vue2.x写法 this.$emit("on-success", result, fileItem);
+              emit("on-success", result, fileItem);
               resolve(result);
             } else {
+              // 回调父页面on-error
+              // vue2.x写法 this.$emit("on-error", xhr);
+              emit("on-error", xhr);
               reject(xhr);
             }
           }
@@ -217,6 +244,7 @@ export default {
           function (evt) {
             if (evt.lengthComputable) {
               const precent = Math.ceil((evt.loaded / evt.total) * 100);
+              // 上传进度
             }
           },
           false
@@ -225,15 +253,7 @@ export default {
         xhr.send(formData);
       });
     };
-    onMounted(() => {
-      console.log("mounted!");
-    });
-    onUpdated(() => {
-      console.log("updated!");
-    });
-    onUnmounted(() => {
-      console.log("unmounted!");
-    });
+
     // 预览图片、删除图片
     const handleFileClick = (
       e: MouseEvent,
@@ -241,13 +261,7 @@ export default {
       index: number
     ): void => {
       showPreviewer();
-      // const previewerImg: any = <HTMLElement | null>(
-      //   document.getElementById("previewerImg")
-      // );
-      const previewerImg: any = ref(null);
-      console.log(item);
-      console.log(previewerImg);
-      previewerImg.value.style.backgroundImage = `url(${item.url})`;
+      currentImg.value = item.url;
       currentIndex.value = index;
     };
 
@@ -266,7 +280,9 @@ export default {
       const delFn = () => {
         hidePreviewer();
         fileList.splice(currentIndex.value, 1);
+        emit("on-change", fileList);
       };
+      delFn();
     };
 
     return {
@@ -280,20 +296,14 @@ export default {
       handleFileClick,
       hidePreviewer,
       deleteImg,
+      currentImg,
+      inputValue,
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@font-face {
-  font-weight: normal;
-  font-style: normal;
-  font-family: "weui";
-  src: url("data:application/octet-stream;base64,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")
-    format("truetype");
-}
-
 .k-uploader {
   padding: 10px 15px;
   .k-uploader_hd {
@@ -317,8 +327,8 @@ export default {
         float: left;
         margin-left: 9px;
         margin-bottom: 9px;
-        width: 79px;
-        height: 79px;
+        width: 74px;
+        height: 74px;
         background: no-repeat center center;
         background-size: cover;
       }
@@ -358,8 +368,8 @@ export default {
       position: relative;
       margin-left: 9px;
       margin-bottom: 9px;
-      width: 77px;
-      height: 77px;
+      width: 74px;
+      height: 74px;
       border: 1px solid #d9d9d9;
       &:before,
       &:after {
@@ -399,6 +409,8 @@ export default {
     right: 0;
     background: #000;
     z-index: 1000;
+    width: 100vw;
+    height: 100vh;
     .k-uploader_preview-img {
       position: absolute;
       top: 0;
@@ -413,16 +425,16 @@ export default {
       right: 0;
       bottom: 0;
       left: 0;
-      background-color: #0d0d0d;
+      background-color: rgb(191 132 49);
       color: #ffffff;
-      height: 60px;
-      line-height: 60px;
+      height: 50px;
+      line-height: 50px;
       text-align: center;
       font-family: "weui";
       &:after {
         color: #ffffff;
-        font-size: 22px;
-        content: "\EA11";
+        font-size: 16px;
+        content: "删除";
       }
     }
   }
