@@ -19,7 +19,7 @@ export default createRouter({
     {
       path: '/event',
       // 必须添加.vue后缀
-      component: () => import('../views/event.vue')
+      component: () => import('../views/eventDemo.vue')
     },
     {
       path: '/callback',
