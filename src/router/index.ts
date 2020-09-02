@@ -7,6 +7,11 @@ export default createRouter({
   // 路由地址
   routes: [
     {
+      path: '/',
+      // 必须添加.vue后缀
+      component: () => import('../views/upload.vue')
+    },
+    {
       path: '/todo',
       // 必须添加.vue后缀
       component: () => import('../views/todo.vue')
