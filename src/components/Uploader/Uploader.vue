@@ -55,7 +55,7 @@ import { ref, reactive} from "vue";
 import { handleFile, transformCoordinate, dataURItoBlob } from "./utils";
 // 文件信息接口
 interface IFile {
-  url: string;
+  url: string; 
 }
 interface IFileItem {
   url: string;
