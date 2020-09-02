@@ -39,13 +39,13 @@
         ref="previewerImg"
         class="k-uploader_preview-img"
         id="previewerImg"
-        @click="hidePreviewer"
+        @click="handleHide"
         :style="{
               backgroundImage: `url(${currentImg})`
         }"
       ></div>
 
-      <div class="k-uploader_del" v-if="!readonly" @click="deleteImg"></div>
+      <div class="k-uploader_del" v-if="!readonly" @click="handleDelete"></div>
     </div>
   </div>
 </template>
@@ -271,14 +271,14 @@ export default {
     };
 
     // 隐藏预览
-    const hidePreviewer = () => {
+    const handleHide = () => {
       previewVisible.value = false;
     };
 
     // 删除图片
-    const deleteImg = () => {
+    const handleDelete = () => {
       const delFn = () => {
-        hidePreviewer();
+        handleHide();
         fileList.splice(currentIndex.value, 1);
         emit("on-change", fileList);
       };
@@ -292,12 +292,12 @@ export default {
       limit,
       readonly,
       previewVisible,
-      handleChange,
-      handleFileClick,
-      hidePreviewer,
-      deleteImg,
       currentImg,
       inputValue,
+      handleChange,
+      handleFileClick,
+      handleHide,
+      handleDelete,
     };
   },
 };
