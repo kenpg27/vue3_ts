@@ -51,11 +51,11 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive} from "vue";
+import { ref, reactive, watchEffect } from "vue";
 import { handleFile, transformCoordinate, dataURItoBlob } from "./utils";
 // 文件信息接口
 interface IFile {
-  url: string; 
+  url: string;
 }
 interface IFileItem {
   url: string;
@@ -122,10 +122,9 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const { limit, title, files, readonly } = props;
     // 待上传文件
-    let fileList = reactive<any[]>([]);
-    fileList = files;
+    let fileList = reactive<any[]>(props.files);
+    //fileList = files;
     // 预览开关
     let previewVisible = ref<Boolean>(false);
     // 当前预览的图片序号
@@ -133,6 +132,11 @@ export default {
     // 定义当前预览图片img
     let currentImg = ref<string | null>("");
     let inputValue = ref<string | null>("");
+
+    watchEffect(()=>{
+      
+    })
+
 
     // 文件变更操作
     const handleChange = (event: HTMLInputEvent): void => {
@@ -145,8 +149,8 @@ export default {
         return;
       }
       const fileCount = fileList.length + inputChangeFiles.length;
-      if (fileCount > limit) {
-        alert(`不能上传超过${limit}张图片`);
+      if (fileCount > props.limit) {
+        alert(`不能上传超过${props.limit}张图片`);
         return;
       }
       // console.log("handleFile");
@@ -287,10 +291,6 @@ export default {
 
     return {
       fileList,
-      title,
-      files,
-      limit,
-      readonly,
       previewVisible,
       currentImg,
       inputValue,

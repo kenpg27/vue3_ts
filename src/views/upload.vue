@@ -7,6 +7,7 @@
       @on-change="onChange"
       @on-success="onSuccess"
       @on-error="onError"
+      :limit="limit"
     ></k-uploader>
   </div>
 </template>
@@ -26,7 +27,7 @@ export default {
   setup() {
     const activeId = ref<number | null>(null);
     // 默认附件数据
-    const fileList = reactive<Array<IFile>>([
+    let fileList = reactive<Array<IFile>>([
       {
         url: "https://ossweb-img.qq.com/images/lol/web201310/skin/big84000.jpg",
       },
@@ -50,12 +51,27 @@ export default {
       console.log(res);
       console.log("change");
     };
+    const limit = ref(4);
+    setTimeout(() => {
+      limit.value = 9;
+      fileList = [
+        {
+          url:
+            "https://ossweb-img.qq.com/images/lol/web201310/skin/big84000.jpg",
+        },
+        {
+          url:
+            "https://ossweb-img.qq.com/images/lol/web201310/skin/big37006.jpg",
+        },
+      ];
+    }, 3000);
     return {
       fileList,
       activeId,
       onSuccess,
       onError,
       onChange,
+      limit,
     };
   },
 };
