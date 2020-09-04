@@ -54,16 +54,6 @@ export default {
     const limit = ref(4);
     setTimeout(() => {
       limit.value = 9;
-      fileList = [
-        {
-          url:
-            "https://ossweb-img.qq.com/images/lol/web201310/skin/big84000.jpg",
-        },
-        {
-          url:
-            "https://ossweb-img.qq.com/images/lol/web201310/skin/big37006.jpg",
-        },
-      ];
     }, 3000);
     return {
       fileList,
