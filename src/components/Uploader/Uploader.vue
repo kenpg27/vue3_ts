@@ -133,10 +133,7 @@ export default {
     let currentImg = ref<string | null>("");
     let inputValue = ref<string | null>("");
 
-    watchEffect(()=>{
-      
-    })
-
+    watchEffect(() => {});
 
     // 文件变更操作
     const handleChange = (event: HTMLInputEvent): void => {
@@ -210,15 +207,13 @@ export default {
         emit("on-success", result);
         return;
 
-        const me = this;
-        const { url, params, name } = props;
         const formData = new FormData();
         const xhr = new XMLHttpRequest();
 
-        formData.append(name, blob);
-        if (params) {
-          for (let key in params) {
-            formData.append(key, params[key]);
+        formData.append(props.name, blob);
+        if (props.params) {
+          for (let key in props.params) {
+            formData.append(key, props.params[key]);
           }
         }
         xhr.onreadystatechange = () => {
@@ -253,7 +248,7 @@ export default {
           },
           false
         );
-        xhr.open("POST", url, true);
+        xhr.open("POST", props.url, true);
         xhr.send(formData);
       });
     };
