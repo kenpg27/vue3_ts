@@ -1,107 +1,145 @@
 <template>
-  <div class="todo-list">
-    <div>
-      <label>新增待办</label>
-      <input v-model="state.todo" @keyup.enter="handleAddTodo" />
+  <div class="todo">
+    <div class="todo-form">
+      <div class="todo-input">
+        <input @keyup.enter="handleAddList" v-model="contentRef" type="text" placeholder="请输入事项内容" />
+      </div>
+      <button type="button" @click="handleAddList">添加事项</button>
     </div>
-    <div>
-      <h3>待办列表({{todos.length}})</h3>
-      <ul>
-        <li v-for="item in todos" :key="item.id" @click="handleChangeStatus(item, true)">
-          <input type="checkbox" />
-          <label>{{item.text}}</label>
-        </li>
-      </ul>
-    </div>
-    <div>
-      <h3>已办列表({{dones.length}})</h3>
-    </div>
-    <ul>
-      <li v-for="item in dones" :key="item.id" @click="handleChangeStatus(item, false)">
-        <input type="checkbox" checked />
-        <label>{{item.text}}</label>
+    <ul class="list">
+      <li class="list-item" v-for="(item,index) of list" :key="item.id">
+        <div class="item-label" :class="item.status?'done':''">{{item.title}}</div>
+        <div class="action-btn">
+          <button class="success" v-if="!item.status">完成</button>
+          <button class="reset" v-if="item.status">激活</button>
+          <button class="delete">删除</button>
+        </div>
       </li>
     </ul>
   </div>
 </template>
+
 <script lang="ts">
-// 在vue2中 data 在vue3中使用 reactive代替
-import { reactive, computed } from "vue";
-import { useRouter } from "vue-router";
+import { reactive, ref, watchEffect } from "vue";
+interface IList {
+  id: number;
+  title: string;
+  status: boolean;
+}
 export default {
-  // setup相当于vue2.0的 beforeCreate和 created，是vue3新增的一个属性，所有的操作都在此属性中完成
-  setup(props, context) {
-    // 通过reactive 可以初始化一个可响应的数据，与Vue2.0中的Vue.observer很相似
-    const state = reactive({
-      todoList: [
-        {
-          id: 1,
-          done: false,
-          text: "吃饭",
-        },
-        {
-          id: 2,
-          done: false,
-          text: "睡觉",
-        },
-        {
-          id: 3,
-          done: false,
-          text: "打豆豆",
-        },
-      ],
-      todo: "",
-    });
-    // 使用计算属性生成待办列表
-    const todos = computed(() => {
-      return state.todoList.filter((item) => !item.done);
-    });
+  setup() {
+    let list = reactive<Array<IList>>([
+      {
+        id: 1,
+        title: "今天学习vue3.0+typescript",
+        status: false,
+      },
+      {
+        id: 2,
+        title: "今天学习vue3.0+typescript",
+        status: true,
+      },
+    ]);
+    let contentRef = ref<String>("");
 
-    // 使用计算属性生成已办列表
-    const dones = computed(() => {
-      return state.todoList.filter((item) => item.done);
-    });
-
-    interface IitemProps {
-      id: Number;
-      done: Boolean;
-      text: String;
-    }
-
-    // 修改待办状态
-    const handleChangeStatus = (item: IitemProps, status: Boolean): void => {
-      item.done = status;
-    };
-
-    // 新增待办
-    const handleAddTodo = () => {
-      if (!state.todo) {
-        alert("请输入待办事项");
-        return;
-      }
-      state.todoList.push({
-        text: state.todo,
-        id: Math.random(),
-        done: false,
-      });
-      state.todo = "";
+    const handleAddList = () => {
+      console.log(contentRef.value);
     };
     return {
-      state,
-      todos,
-      dones,
-      handleChangeStatus,
-      handleAddTodo,
+      list,
+      contentRef,
+      handleAddList,
     };
   },
 };
 </script>
-<style scoped>
-.todo-list {
-  text-align: center;
-}
 
-.todo-list ul li {
-  list-style: none;
+<style lang="scss">
+button {
+  border-width: 0px;
+  border-radius: 3px;
+  background: #1e90ff;
+  cursor: pointer;
+  outline: none;
+  font-family: Microsoft YaHei;
+  color: white;
+  font-size: 14px;
+}
+.todo {
+  padding: 5vw;
+  .todo-form {
+    display: flex;
+    justify-content: space-between;
+    .todo-input {
+      width: 75%;
+      text-align: left;
+      input {
+        width: 100%;
+        border: 1px solid #ccc;
+        padding: 10px 0px;
+        border-radius: 3px;
+        padding-left: 5px;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+      }
+      input:focus {
+        border-color: #66afe9;
+        outline: 0;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+          0 0 8px rgba(102, 175, 233, 0.6);
+      }
+    }
+    button {
+      width: 20%;
+      font-size: 12px;
+    }
+    button:active {
+      background: #5599ff;
+    }
+  }
+  .list {
+    text-align: left;
+    vertical-align: top;
+    background: #fff;
+    color: rgb(30, 144, 255);
+    border-radius: 5px;
+    padding: 1em;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    margin-top: 30px;
+    .list-item {
+      list-style: none;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      .item-label {
+        width: 80%;
+      }
+      .action-btn {
+        width: 15%;
+        button {
+          margin: 0px 3px 5px;
+          font-size: 12px;
+          padding: 3px 7px;
+        }
+        .success {
+          background-color: #009688;
+        }
+        .delete {
+          background-color: #e91e63;
+        }
+        .reset {
+          background-color: #03a9f4;
+        }
+      }
+    }
+    .list-item:last-of-type {
+      border-bottom: none;
+    }
+    .done {
+      text-decoration: line-through;
+      color: #ddd;
+    }
+  }
 }
 </style>
