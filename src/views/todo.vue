@@ -6,21 +6,24 @@
       </div>
       <button type="button" @click="handleAddList">添加事项</button>
     </div>
-    <ul class="list">
-      <li class="list-item" v-for="(item,index) of listRev" :key="item.id">
+    <ul class="list" v-if="listRev.length">
+      <li class="list-item" v-for="(item,index) of listRev" :id="item.id" :key="item.id">
         <div class="item-label" :class="item.status?'done':''">{{item.title}}</div>
         <div class="action-btn">
-          <button class="success" v-if="!item.status">完成</button>
-          <button class="reset" v-if="item.status">激活</button>
-          <button class="delete">删除</button>
+          <button class="success" v-if="!item.status" @click="handleStatusChange(index,true)">完成</button>
+          <button class="reset" v-if="item.status" @click="handleStatusChange(index,false)">激活</button>
+          <button class="delete" @click="handleRemove(index)">删除</button>
         </div>
       </li>
     </ul>
+    <p v-else>暂无待办事项..</p>
   </div>
 </template>
 
 <script lang="ts">
 import { reactive, ref, watchEffect } from "vue";
+
+// 事项接口
 interface IList {
   id: number;
   title: string;
@@ -28,27 +31,44 @@ interface IList {
 }
 export default {
   setup() {
-    let listRev = reactive<Array<IList>>([
-      {
-        id: 1,
-        title: "今天学习vue3.0+typescript",
-        status: false,
-      },
-      {
-        id: 2,
-        title: "今天学习vue3.0+typescript",
-        status: true,
-      },
-    ]);
-    let contentRef = ref<String>("");
-
+    let listRev = reactive<Array<IList>>([]);
+    let contentRef = ref<string | null>(null);
+    let idRef = ref<number>(0);
+    // 事项添加
     const handleAddList = () => {
-      console.log(contentRef.value);
+      if (!contentRef.value) return alert("请输入事项内容");
+      if (listRev.find((item) => item.title === contentRef.value)) {
+        return alert("该事项已存在，请输入其他事项吧~");
+      }
+      listRev.push({
+        title: contentRef.value,
+        id: ++idRef.value,
+        status: false,
+      });
+      contentRef.value = "";
     };
+
+    // 事项完成
+    const handleStatusChange = (index: number, status: boolean) => {
+      listRev[index].status = status;
+    };
+
+    // 事项删除
+    const handleRemove = (index: number) => {
+      listRev.splice(index, 1);
+    };
+    const count = ref(0);
+    const add = () => count.value++;
+
+    watchEffect(() => {
+      console.log("contentRef changed", contentRef.value);
+    });
     return {
       listRev,
       contentRef,
       handleAddList,
+      handleStatusChange,
+      handleRemove,
     };
   },
 };
