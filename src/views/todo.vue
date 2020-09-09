@@ -7,7 +7,7 @@
       <button type="button" @click="handleAddList">添加事项</button>
     </div>
     <ul class="list">
-      <li class="list-item" v-for="(item,index) of list" :key="item.id">
+      <li class="list-item" v-for="(item,index) of listRev" :key="item.id">
         <div class="item-label" :class="item.status?'done':''">{{item.title}}</div>
         <div class="action-btn">
           <button class="success" v-if="!item.status">完成</button>
@@ -28,7 +28,7 @@ interface IList {
 }
 export default {
   setup() {
-    let list = reactive<Array<IList>>([
+    let listRev = reactive<Array<IList>>([
       {
         id: 1,
         title: "今天学习vue3.0+typescript",
@@ -46,7 +46,7 @@ export default {
       console.log(contentRef.value);
     };
     return {
-      list,
+      listRev,
       contentRef,
       handleAddList,
     };
