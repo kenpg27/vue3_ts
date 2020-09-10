@@ -28,7 +28,7 @@
 # build
 `yarn build` 
 
-#一些练习的代码
+# 一些练习的代码
 
 	vue3.0 + ts 重写了upload-component
 	设计模式：发布订阅和观察者模式的区别
